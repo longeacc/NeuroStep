@@ -25,4 +25,3 @@ Toutes les données sont stockées au format `.json` pour faciliter la gestion e
 - `app.py` : L'interface utilisateur et administrateur (Streamlit)
 - `database.py` : Le gestionnaire de la base de données JSON
 - `data/database.json` : Les applications, troubles et thèmes répertoriés
-
