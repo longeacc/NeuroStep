@@ -1,0 +1,254 @@
+{
+    "applications": [
+        {
+            "id": 1,
+            "nom": "Avaz",
+            "description": "**Avantages (+)**\n- Pictogrammes, Mots\n- Retour auditif\n- Personnalisable\n\n**Limites (-)**\n- Seulement Android\n- Période d'essai longue\n- Payant",
+            "objectif_ther": "Expression orale, communication verbale, compensation des troubles de la communication",
+            "plateformes": [
+                "Android"
+            ],
+            "gratuit": false,
+            "troubles": [
+                "Trouble du langage",
+                "Aphasie"
+            ],
+            "url_store": "",
+            "enrichi": false
+        },
+        {
+            "id": 2,
+            "nom": "Assistant Parole",
+            "description": "**Avantages (+)**\n- Synthèse vocale\n- Communication rapide personnalisable\n- Possibilité d'ajouter des phrases fréquentes\n\n**Limites (-)**\n- Peut nécessiter un apprentissage\n- Interface parfois complexe\n- Pas de picto que du texte dans la version gratuite",
+            "objectif_ther": "Communication, expression des besoins, participation sociale",
+            "plateformes": [
+                "Android"
+            ],
+            "gratuit": false,
+            "troubles": [
+                "Trouble du langage",
+                "Aphasie"
+            ],
+            "url_store": "",
+            "enrichi": false
+        },
+        {
+            "id": 3,
+            "nom": "MyTherapy",
+            "description": "**Avantages (+)**\n- Rappels médicamenteux\n- Suivi des prises et Notifications\n- Gratuit, Synchronisation possible\n- Suivi santé centralisé\n\n**Limites (-)**\n- Visuel chargé, Beaucoup de paramètres\n- Besoin d'un paramétrage initial",
+            "objectif_ther": "Mémoire, organisation quotidienne, routines",
+            "plateformes": [
+                "iOS",
+                "Android"
+            ],
+            "gratuit": true,
+            "troubles": [
+                "Troubles mnésiques"
+            ],
+            "url_store": "",
+            "enrichi": false
+        },
+        {
+            "id": 4,
+            "nom": "Agenda / Calendrier",
+            "description": "**Avantages (+)**\n- Jours, semaines, mois (différentes vues)\n- Noter rendez-vous/événement, Couleurs par catégories\n- Rappel / notification\n- Gratuit / accessible à tous les téléphones\n- Synchroniser avec les autres\n\n**Limites (-)**\n- Visuel chargé, Pas de picto\n- Beaucoup de paramètres à prendre en compte",
+            "objectif_ther": "Mémoire, Organisation temporelle, planification, Structuration quotidienne",
+            "plateformes": [
+                "iOS",
+                "Android"
+            ],
+            "gratuit": true,
+            "troubles": [
+                "Troubles mnésiques",
+                "Fatigabilité modérée"
+            ],
+            "url_store": "",
+            "enrichi": false
+        },
+        {
+            "id": 5,
+            "nom": "Minuteur",
+            "description": "**Avantages (+)**\n- Rappel dans le temps\n- Description du rappel écrit\n- Sonnerie, Minuterie\n- Intégré dès l'achat du téléphone\n\n**Limites (-)**\n- Peu contextualisé\n- Nécessite de comprendre le temps",
+            "objectif_ther": "Gestion du temps, Attention, Initiation / arrêt activité",
+            "plateformes": [
+                "iOS",
+                "Android"
+            ],
+            "gratuit": true,
+            "troubles": [
+                "Troubles de l'attention",
+                "Troubles mnésiques"
+            ],
+            "url_store": "",
+            "enrichi": false
+        },
+        {
+            "id": 6,
+            "nom": "Tasks",
+            "description": "**Avantages (+)**\n- Interface simple\n- Création de listes de tâches\n- Rappels, notifications et répétition de tâches\n- Synchronisation possible\n\n**Limites (-)**\n- Nécessite de structurer la tâche et un paramétrage initial\n- Demande des capacités d'organisation\n- Peu visuel (peu/pas de pictogrammes)",
+            "objectif_ther": "Organisation, Mémoire, Initiation des tâches, planification",
+            "plateformes": [
+                "iOS",
+                "Android"
+            ],
+            "gratuit": true,
+            "troubles": [
+                "Troubles mnésiques"
+            ],
+            "url_store": "",
+            "enrichi": false
+        },
+        {
+            "id": 7,
+            "nom": "Samsung Notes",
+            "description": "**Avantages (+)**\n- Notes écrites, photos, audio, organisation possible\n\n**Limites (-)**\n- Beaucoup de fonctionnalités (peut surcharger cognitivement)",
+            "objectif_ther": "Mémoire, Attention, Prise d'information",
+            "plateformes": [
+                "Android"
+            ],
+            "gratuit": true,
+            "troubles": [
+                "Troubles mnésiques",
+                "Troubles de l'attention"
+            ],
+            "url_store": "",
+            "enrichi": false
+        },
+        {
+            "id": 8,
+            "nom": "IDF Mobilités",
+            "description": "**Avantages (+)**\n- Itinéraires transport\n- Temps réel, Favoris possibles\n\n**Limites (-)**\n- Informations nombreuses\n- Charge cognitive importante",
+            "objectif_ther": "Planification, Orientation, autonomie extérieure",
+            "plateformes": [
+                "iOS",
+                "Android"
+            ],
+            "gratuit": true,
+            "troubles": [
+                "Problème d'orientation"
+            ],
+            "url_store": "",
+            "enrichi": false
+        },
+        {
+            "id": 9,
+            "nom": "City Mapper",
+            "description": "**Avantages (+)**\n- Recherche d'adresses, Géolocalisation directe, Calcul précis\n- Horaires transport, Alertes perturbations, Trafic en temps réel\n- Itinéraires alternatifs, Partage de trajet... (très complet)\n\n**Limites (-)**\n- Dépend d'internet et d'un smartphone récent\n- GPS parfois imprécis\n- Peu pratique hors zones urbaines",
+            "objectif_ther": "Planification, Orientation spatiale, Séquençage, Déplacements autonomes",
+            "plateformes": [
+                "iOS",
+                "Android"
+            ],
+            "gratuit": true,
+            "troubles": [
+                "Problème d'orientation",
+                "Troubles de l'attention"
+            ],
+            "url_store": "",
+            "enrichi": false
+        },
+        {
+            "id": 10,
+            "nom": "Google Maps",
+            "description": "**Avantages (+)**\n- Guidage étape par étape, Itinéraires alternatifs, GPS vocal\n- Trafic en temps réel, Street View, Lieux favoris\n- Partage de position\n\n**Limites (-)**\n- Dépend d'internet (en temps réel) et mises à jour cartes \n- GPS parfois imprécis\n- Moins spécialisé pour les transports urbains purs",
+            "objectif_ther": "Planification, Orientation spatiale, Repérage, Autonomie extérieure",
+            "plateformes": [
+                "iOS",
+                "Android",
+                "Web"
+            ],
+            "gratuit": true,
+            "troubles": [
+                "Problème d'orientation"
+            ],
+            "url_store": "",
+            "enrichi": false
+        },
+        {
+            "id": 11,
+            "nom": "Voice to text",
+            "description": "**Avantages (+)**\n- Réduit effort d'écriture\n- Rapide et Accessible\n- Intégré par défaut\n\n**Limites (-)**\n- Erreurs vocales possibles\n- Sensible au bruit ambiant",
+            "objectif_ther": "Compensation difficultés motrices / langage. Langage écrit, Communication, Production écrite",
+            "plateformes": [
+                "iOS",
+                "Android"
+            ],
+            "gratuit": true,
+            "troubles": [
+                "Trouble du langage",
+                "Aphasie",
+                "Hémiplégie"
+            ],
+            "url_store": "",
+            "enrichi": false
+        },
+        {
+            "id": 12,
+            "nom": "Appareil Photo",
+            "description": "**Avantages (+)**\n- Support visuel concret et facilement accessible\n- Permet de créer des repères visuels\n- Aide-mémoire utile pour étapes d'une activité\n- Déjà intégré\n\n**Limites (-)**\n- Accumulation importante de photos\n- Nécessite d'organiser / retrouver les images\n- Apprentissage initial, L'oubli de l'outil est fréquent",
+            "objectif_ther": "Mémoire, Attention divisée, Langage écrit",
+            "plateformes": [
+                "iOS",
+                "Android"
+            ],
+            "gratuit": true,
+            "troubles": [
+                "Troubles mnésiques",
+                "Troubles de l'attention"
+            ],
+            "url_store": "",
+            "enrichi": false
+        },
+        {
+            "id": 13,
+            "nom": "Applications Cartes / Wallet",
+            "description": "**Avantages (+)**\n- Centralisation documents (CB, Permis, Carte d'identité...)\n- Paiement facile sans chercher la carte\n\n**Limites (-)**\n- Compliqué à paramétrer la première fois",
+            "objectif_ther": "Mémoire, Facilitation des démarches, Organisation financière",
+            "plateformes": [
+                "iOS",
+                "Android"
+            ],
+            "gratuit": true,
+            "troubles": [
+                "Troubles mnésiques",
+                "Hémiplégie"
+            ],
+            "url_store": "",
+            "enrichi": false
+        },
+        {
+            "id": 14,
+            "nom": "L'Horloge (4 fonctions)",
+            "description": "**Avantages (+)**\n- Intègre Alarme, Horloge mondiale, Chronomètre et Minuteur\n- Centralise le temps\n\n**Limites (-)**\n- Peu personnalisable d'un point de vue accessibilité cognitive",
+            "objectif_ther": "Attention, Repérage temporel, Planification",
+            "plateformes": [
+                "iOS",
+                "Android"
+            ],
+            "gratuit": true,
+            "troubles": [
+                "Troubles de l'attention",
+                "Troubles mnésiques"
+            ],
+            "url_store": "",
+            "enrichi": false
+        }
+    ],
+    "troubles": [
+        "Trouble du langage",
+        "Aphasie",
+        "Fatigabilité modérée",
+        "Troubles mnésiques",
+        "Hémiplégie",
+        "Troubles de l'attention",
+        "Problème d'orientation"
+    ],
+    "themes": [
+        "Aide à la communication",
+        "Planification",
+        "Mémoire",
+        "Rééducation",
+        "Gestion du temps",
+        "Orientation"
+    ]
+}
