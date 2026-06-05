@@ -101,19 +101,27 @@ if perspective == "Utilisateur":
             
             tags_html = "".join([f'<span class="tag">{tr}</span>' for tr in app.get("troubles", [])])
             link_html = f"<br><br><a href='{app.get('url_store')}' target='_blank'> Voir l'outil</a>" if app.get("url_store") else ""
-            
-            # Using raw HTML in a single markdown block instead of split markdown blocks
-            card_html = f"""
-            <div class="app-card">
-                <h4 style="margin-top: 0;">{app.get('nom')}</h4>
-                <div style="color: #666; font-size: 0.9em; margin-bottom: 10px;">
-                     {', '.join(app.get('plateformes', []))}  ·  {gratuit_badge}  ·  {enrichi_badge}
-                </div>
-                <p>{app.get('description', '').replace(chr(10), '<br>')}</p>
-                <div>{tags_html}</div>
-                {link_html}
-            </div>
-            """
+
+            # Image à gauche, dans l'encadré gris (vide si pas d'image)
+            image_html = ""
+            if app.get("image"):
+                image_html = f"<img src='{app.get('image')}' alt='{app.get('nom')}' style='width: 280px; object-fit: cover; border-radius: 8px; flex-shrink: 0;'/>"
+
+            # HTML sans indentation pour éviter que Streamlit l'interprète comme un bloc de code
+            card_html = (
+                '<div class="app-card" style="display: flex; gap: 16px; align-items: flex-start;">'
+                '<div style="flex: 1; min-width: 0;">'
+                f'<h4 style="margin-top: 0;">{app.get("nom")}</h4>'
+                '<div style="color: #666; font-size: 0.9em; margin-bottom: 10px;">'
+                f'{", ".join(app.get("plateformes", []))}  ·  {gratuit_badge}  ·  {enrichi_badge}'
+                '</div>'
+                f'<p>{app.get("description", "").replace(chr(10), "<br>")}</p>'
+                f'<div>{tags_html}</div>'
+                f'{link_html}'
+                '</div>'
+                f'{image_html}'
+                '</div>'
+            )
             st.markdown(card_html, unsafe_allow_html=True)
 
 elif perspective == "ADMIN":
@@ -134,6 +142,7 @@ elif perspective == "ADMIN":
                 with st.form(f"edit_form_{app.get('id')}"):
                     edit_nom = st.text_input("Nom de l'API / Outil", value=app.get("nom", ""))
                     edit_desc = st.text_area("Avantages / Inconvénients / Description", value=app.get("description", ""))
+                    edit_image = st.text_input("URL de l'image (logo / capture)", value=app.get("image", ""))
                     
                     all_os = ["iOS", "Android", "Web", "Windows"]
                     current_os = [x for x in app.get("plateformes", []) if x in all_os]
@@ -151,6 +160,7 @@ elif perspective == "ADMIN":
                         db.update_app(app.get("id"), {
                             "nom": edit_nom,
                             "description": edit_desc,
+                            "image": edit_image,
                             "plateformes": edit_os,
                             "gratuit": edit_gratuit,
                             "enrichi": edit_enrichi,
@@ -164,6 +174,7 @@ elif perspective == "ADMIN":
         with st.form("add_app_form"):
             new_nom = st.text_input("Nom de l'API / Outil")
             new_desc = st.text_area("Avantages / Inconvénients / Description")
+            new_image = st.text_input("URL de l'image (logo / capture)")
             new_os = st.multiselect("Supports", ["iOS", "Android", "Web", "Windows"])
             new_gratuit = st.checkbox("Est-ce gratuit ?")
             new_troubles = st.multiselect("Troubles ciblés", db.get_all_troubles())
@@ -173,6 +184,7 @@ elif perspective == "ADMIN":
                     db.insert_app({
                         "nom": new_nom,
                         "description": new_desc,
+                        "image": new_image,
                         "plateformes": new_os,
                         "gratuit": new_gratuit,
                         "troubles": new_troubles,
