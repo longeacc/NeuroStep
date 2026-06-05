@@ -25,3 +25,11 @@ Toutes les données sont stockées au format `.json` pour faciliter la gestion e
 - `app.py` : L'interface utilisateur et administrateur (Streamlit)
 - `database.py` : Le gestionnaire de la base de données JSON
 - `data/database.json` : Les applications, troubles et thèmes répertoriés
+
+## Licence
+
+© 2026 Clément Longeac — **Tous droits réservés**.
+
+Le code est rendu public uniquement pour permettre le déploiement sur Streamlit
+Community Cloud. Toute copie, modification, redistribution ou réutilisation est
+interdite sans autorisation écrite. Voir le fichier [LICENSE](LICENSE).

@@ -1,0 +1,52 @@
+NeuroStep — Tous droits réservés / All Rights Reserved
+
+Copyright (c) 2026 Clément Longeac
+
+================================================================================
+FRANÇAIS
+================================================================================
+
+Ce logiciel et son code source (« le Logiciel ») sont la propriété exclusive de
+l'auteur identifié ci-dessus. Le code est rendu visible publiquement uniquement
+pour des raisons techniques de déploiement (notamment Streamlit Community Cloud).
+
+Sauf autorisation écrite et préalable de l'auteur, il est strictement INTERDIT de :
+
+  1. copier, reproduire ou télécharger le Logiciel ou toute partie de celui-ci ;
+  2. modifier, adapter, traduire ou créer des œuvres dérivées ;
+  3. distribuer, publier, sous-licencier, vendre ou louer le Logiciel ;
+  4. utiliser le Logiciel, en tout ou partie, à des fins commerciales ou non
+     commerciales, en dehors de sa simple consultation.
+
+Aucun droit ni aucune licence d'utilisation n'est accordé, de manière expresse
+ou implicite, sur le Logiciel ou la propriété intellectuelle de l'auteur.
+
+LE LOGICIEL EST FOURNI « EN L'ÉTAT », SANS GARANTIE D'AUCUNE SORTE. EN AUCUN CAS
+L'AUTEUR NE POURRA ÊTRE TENU RESPONSABLE DE TOUT DOMMAGE DÉCOULANT DE
+L'UTILISATION DU LOGICIEL.
+
+Pour toute demande d'autorisation : clement.longeac@gmail.com
+
+================================================================================
+ENGLISH
+================================================================================
+
+This software and its source code (the "Software") are the exclusive property of
+the author named above. The source code is made publicly visible solely for
+technical deployment reasons (notably Streamlit Community Cloud).
+
+Without the prior written permission of the author, you may NOT:
+
+  1. copy, reproduce or download the Software or any part of it;
+  2. modify, adapt, translate or create derivative works;
+  3. distribute, publish, sublicense, sell or rent the Software;
+  4. use the Software, in whole or in part, for any commercial or
+     non-commercial purpose, beyond merely viewing it.
+
+No rights or license of use are granted, express or implied, in the Software or
+in the author's intellectual property.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. IN NO EVENT
+SHALL THE AUTHOR BE LIABLE FOR ANY DAMAGES ARISING FROM THE USE OF THE SOFTWARE.
+
+Permission requests: clement.longeac@gmail.com
