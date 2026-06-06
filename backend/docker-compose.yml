@@ -19,7 +19,8 @@ services:
       - ../data:/data:ro   # legacy database.json available to the seed script
 
   db:
-    image: postgres:16
+    # PostgreSQL 16 + pgvector; bundles contrib (unaccent, pg_trgm) for FR full-text.
+    image: pgvector/pgvector:pg16
     environment:
       POSTGRES_USER: neurostep
       POSTGRES_PASSWORD: neurostep

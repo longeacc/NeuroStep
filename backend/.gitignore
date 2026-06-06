@@ -4,3 +4,7 @@ __pycache__/
 *.db
 .venv/
 venv/
+.coverage
+.pytest_cache/
+htmlcov/
+.ruff_cache/

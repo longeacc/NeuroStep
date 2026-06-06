@@ -21,8 +21,10 @@ import app.models  # noqa: F401,E402
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    # Skeleton: create tables on startup. Production uses Alembic migrations.
-    Base.metadata.create_all(bind=engine)
+    # PostgreSQL: schema + search extensions are managed by Alembic
+    # (`alembic upgrade head`). SQLite dev: auto-create for zero-friction boot.
+    if engine.dialect.name != "postgresql":
+        Base.metadata.create_all(bind=engine)
     yield
 
 

@@ -8,10 +8,21 @@ from sqladmin.authentication import AuthenticationBackend
 from sqlalchemy import select
 from starlette.requests import Request
 
-from app.core.security import create_access_token, decode_access_token, verify_password
+from app.core.security import (
+    TOKEN_ACCESS,
+    create_access_token,
+    decode_token,
+    verify_password,
+)
 from app.db.session import SessionLocal, engine
 from app.models.application import Application
+from app.models.cognition import (
+    FonctionCognitive,
+    RetentissementVieQuotidienne,
+    SousFonction,
+)
 from app.models.evaluation import Evaluation
+from app.models.relation import RelationTherapeutique
 from app.models.taxonomy import Theme, Trouble
 from app.models.user import User, UserRole
 
@@ -39,7 +50,7 @@ class AdminAuth(AuthenticationBackend):
         token = request.session.get("token")
         if not token:
             return False
-        email = decode_access_token(token)
+        email = decode_token(token, TOKEN_ACCESS)
         if not email:
             return False
         with SessionLocal() as db:
@@ -56,7 +67,32 @@ class ApplicationAdmin(ModelView, model=Application):
 
 
 class TroubleAdmin(ModelView, model=Trouble):
-    column_list = [Trouble.id, Trouble.name]
+    column_list = [Trouble.id, Trouble.name, Trouble.fonction]
+
+
+class FonctionCognitiveAdmin(ModelView, model=FonctionCognitive):
+    name = "Fonction cognitive"
+    name_plural = "Fonctions cognitives"
+    column_list = [
+        FonctionCognitive.id,
+        FonctionCognitive.nom,
+        FonctionCognitive.is_motrice,
+    ]
+
+
+class SousFonctionAdmin(ModelView, model=SousFonction):
+    name = "Sous-fonction"
+    name_plural = "Sous-fonctions"
+    column_list = [SousFonction.id, SousFonction.nom, SousFonction.fonction]
+
+
+class RetentissementAdmin(ModelView, model=RetentissementVieQuotidienne):
+    name = "Retentissement"
+    name_plural = "Retentissements"
+    column_list = [
+        RetentissementVieQuotidienne.id,
+        RetentissementVieQuotidienne.libelle,
+    ]
 
 
 class ThemeAdmin(ModelView, model=Theme):
@@ -64,8 +100,19 @@ class ThemeAdmin(ModelView, model=Theme):
 
 
 class UserAdmin(ModelView, model=User):
-    column_list = [User.id, User.email, User.role, User.is_active]
+    column_list = [User.id, User.email, User.role, User.is_active, User.is_verified]
     column_searchable_list = [User.email]
+
+
+class RelationAdmin(ModelView, model=RelationTherapeutique):
+    name = "Relation thérapeutique"
+    name_plural = "Relations thérapeutiques"
+    column_list = [
+        RelationTherapeutique.id,
+        RelationTherapeutique.ergo_id,
+        RelationTherapeutique.patient_id,
+        RelationTherapeutique.active,
+    ]
 
 
 class EvaluationAdmin(ModelView, model=Evaluation):
@@ -81,7 +128,11 @@ def setup_admin(app, secret_key: str) -> Admin:
     )
     admin.add_view(ApplicationAdmin)
     admin.add_view(TroubleAdmin)
+    admin.add_view(FonctionCognitiveAdmin)
+    admin.add_view(SousFonctionAdmin)
+    admin.add_view(RetentissementAdmin)
     admin.add_view(ThemeAdmin)
     admin.add_view(UserAdmin)
+    admin.add_view(RelationAdmin)
     admin.add_view(EvaluationAdmin)
     return admin

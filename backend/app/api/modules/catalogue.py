@@ -10,12 +10,14 @@ from sqlalchemy.orm import Session
 from app.api.deps import require_admin
 from app.db.session import get_db
 from app.models.application import Application
+from app.models.cognition import FonctionCognitive
 from app.models.taxonomy import Theme, Trouble
 from app.models.user import User
 from app.schemas.catalogue import (
     ApplicationCreate,
     ApplicationRead,
     ApplicationUpdate,
+    FonctionCognitiveRead,
     ThemeRead,
     TroubleRead,
 )
@@ -33,6 +35,14 @@ def list_troubles(db: Session = Depends(get_db)):
 @router.get("/_meta/themes", response_model=list[ThemeRead], tags=["catalogue"])
 def list_themes(db: Session = Depends(get_db)):
     return list(db.scalars(select(Theme).order_by(Theme.name)))
+
+
+@router.get(
+    "/_meta/fonctions", response_model=list[FonctionCognitiveRead], tags=["catalogue"]
+)
+def list_fonctions(db: Session = Depends(get_db)):
+    """L'ADAPT cognitive functions + their sub-functions."""
+    return list(db.scalars(select(FonctionCognitive).order_by(FonctionCognitive.nom)))
 
 
 # --- Applications ---

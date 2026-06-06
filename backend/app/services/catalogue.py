@@ -4,11 +4,39 @@ Reproduces the Streamlit prototype's filtering (search text, OS, trouble),
 plus get-or-create of Trouble rows from free-text names.
 """
 
-from sqlalchemy import or_, select
+from sqlalchemy import Select, func, or_, select
 from sqlalchemy.orm import Session
 
 from app.models.application import Application
 from app.models.taxonomy import Trouble
+
+
+def _apply_text_search(stmt: Select, db: Session, q: str) -> Select:
+    """Filter by free-text query, dialect-aware.
+
+    PostgreSQL: French full-text (`to_tsvector('french', ...)`) combined with
+    unaccent + pg_trgm fuzzy matching for typo tolerance.
+    SQLite (dev): portable ILIKE fallback.
+    """
+    if db.bind.dialect.name == "postgresql":
+        haystack = func.unaccent(
+            func.concat_ws(
+                " ", Application.nom, func.coalesce(Application.description, "")
+            )
+        )
+        tsquery = func.websearch_to_tsquery("french", func.unaccent(q))
+        return stmt.where(
+            or_(
+                func.to_tsvector("french", haystack).op("@@")(tsquery),
+                # trigram fuzzy on name (typo-tolerant), threshold via similarity
+                func.similarity(func.unaccent(Application.nom), func.unaccent(q)) > 0.2,
+            )
+        )
+
+    like = f"%{q.lower()}%"
+    return stmt.where(
+        or_(Application.nom.ilike(like), Application.description.ilike(like))
+    )
 
 
 def resolve_troubles(db: Session, names: list[str]) -> list[Trouble]:
@@ -37,13 +65,7 @@ def list_applications(
     stmt = select(Application)
 
     if q:
-        like = f"%{q.lower()}%"
-        stmt = stmt.where(
-            or_(
-                Application.nom.ilike(like),
-                Application.description.ilike(like),
-            )
-        )
+        stmt = _apply_text_search(stmt, db, q)
     if trouble:
         stmt = stmt.where(Application.troubles.any(Trouble.name == trouble))
 

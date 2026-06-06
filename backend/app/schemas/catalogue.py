@@ -3,10 +3,33 @@
 from pydantic import BaseModel, ConfigDict
 
 
+class SousFonctionRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    nom: str
+
+
+class FonctionCognitiveRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    nom: str
+    is_motrice: bool
+    sous_fonctions: list[SousFonctionRead] = []
+
+
+class RetentissementRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    libelle: str
+
+
 class TroubleRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
     name: str
+    fonction: FonctionCognitiveRead | None = None
+    sous_fonctions: list[SousFonctionRead] = []
+    retentissements: list[RetentissementRead] = []
 
 
 class ThemeRead(BaseModel):
@@ -47,3 +70,4 @@ class ApplicationRead(ApplicationBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
     troubles: list[TroubleRead] = []
+    themes: list[ThemeRead] = []

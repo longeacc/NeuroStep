@@ -24,7 +24,13 @@ class Settings(BaseSettings):
     # --- Security / JWT ---
     SECRET_KEY: str = "CHANGE_ME_IN_PRODUCTION_dev_only_secret"
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 1 day
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 15  # short-lived access token
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7  # long-lived refresh (httpOnly cookie)
+    REFRESH_COOKIE_NAME: str = "neurostep_refresh"
+    COOKIE_SECURE: bool = False  # True in production (HTTPS only)
+    COOKIE_SAMESITE: str = "lax"
+    # Token issued for email-verification links (Phase 0).
+    EMAIL_VERIFY_EXPIRE_HOURS: int = 48
 
     # --- Database ---
     # Defaults to local SQLite so the skeleton boots with zero infra.
