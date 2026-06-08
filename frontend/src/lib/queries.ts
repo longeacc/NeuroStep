@@ -10,6 +10,17 @@ export function getApplications(filters: CatalogueFilters) {
   );
 }
 
+export function getApplication(id: number) {
+  return api.request<Application>(`/applications/${id}`);
+}
+
+export function useApplication(id: number) {
+  return useQuery({
+    queryKey: ["application", id],
+    queryFn: () => getApplication(id),
+  });
+}
+
 export function getTroubles() {
   return api.request<Trouble[]>("/applications/_meta/troubles");
 }

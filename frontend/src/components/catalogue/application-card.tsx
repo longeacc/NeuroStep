@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +11,12 @@ export function ApplicationCard({ app }: { app: Application }) {
       <CardContent className="flex gap-4 p-5">
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex items-center gap-2">
-            <h3 className="truncate text-lg font-semibold">{app.nom}</h3>
+            <Link
+              href={`/applications/${app.id}`}
+              className="truncate text-lg font-semibold hover:text-primary hover:underline"
+            >
+              {app.nom}
+            </Link>
             {app.enrichi && <Badge variant="success">Enrichi</Badge>}
           </div>
 

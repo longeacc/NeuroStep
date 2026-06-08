@@ -23,4 +23,7 @@ class UserRead(BaseModel):
     role: UserRole
     is_active: bool
     is_verified: bool
+    etablissement: str | None = None
+    rpps: str | None = None
+    rpps_verified: bool = False
     created_at: datetime

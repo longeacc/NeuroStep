@@ -12,6 +12,7 @@ from app.models.taxonomy import Trouble, Theme
 from app.models.application import Application, application_themes, application_troubles
 from app.models.evaluation import Evaluation
 from app.models.relation import RelationTherapeutique
+from app.models.prescription import Prescription, PrescriptionItem
 
 __all__ = [
     "User",
@@ -28,4 +29,6 @@ __all__ = [
     "application_themes",
     "Evaluation",
     "RelationTherapeutique",
+    "Prescription",
+    "PrescriptionItem",
 ]

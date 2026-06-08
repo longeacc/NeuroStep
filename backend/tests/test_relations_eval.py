@@ -33,22 +33,55 @@ def test_relation_requires_ergo(client, admin_token):
     assert r.status_code == 403
 
 
-def test_evaluation_create_and_list(client, ergo_token):
+EVAL_PAYLOAD = {
+    "pertinence_clinique": 4,
+    "utilisabilite": 5,
+    "efficacite": 4,
+    "accessibilite": 3,
+    "integration": 5,
+    "avantages": "Simple à prendre en main",
+    "limites": "Voix robotique",
+    "contexte_utilisation": "Séances de rééducation",
+    "profil_patient": "Aphasie modérée",
+}
+
+
+def test_evaluation_create_list_summary(client, ergo_token):
     app_id = client.get(f"{API}/applications").json()[0]["id"]
     r = client.post(
         f"{API}/evaluations",
-        json={"application_id": app_id, "rating": 4, "comment": "utile"},
+        json={"application_id": app_id, **EVAL_PAYLOAD},
         headers=auth_header(ergo_token),
     )
     assert r.status_code == 201
+    body = r.json()
+    assert body["moyenne"] == 4.2  # (4+5+4+3+5)/5
+    assert body["auteur_rpps_verifie"] is False
+
     evals = client.get(f"{API}/evaluations/application/{app_id}").json()
-    assert any(e["rating"] == 4 for e in evals)
+    assert any(e["pertinence_clinique"] == 4 for e in evals)
+
+    summary = client.get(f"{API}/evaluations/application/{app_id}/summary").json()
+    assert summary["nombre"] >= 1
+    assert "efficacite" in summary["moyennes_par_axe"]
+    assert summary["moyenne_globale"] is not None
+
+
+def test_evaluation_axis_out_of_range(client, ergo_token):
+    app_id = client.get(f"{API}/applications").json()[0]["id"]
+    bad = {**EVAL_PAYLOAD, "pertinence_clinique": 6}
+    r = client.post(
+        f"{API}/evaluations",
+        json={"application_id": app_id, **bad},
+        headers=auth_header(ergo_token),
+    )
+    assert r.status_code == 422
 
 
 def test_evaluation_unknown_app(client, ergo_token):
     r = client.post(
         f"{API}/evaluations",
-        json={"application_id": 999999, "rating": 3},
+        json={"application_id": 999999, **EVAL_PAYLOAD},
         headers=auth_header(ergo_token),
     )
     assert r.status_code == 404

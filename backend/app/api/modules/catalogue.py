@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from app.api.deps import require_admin
 from app.db.session import get_db
 from app.models.application import Application
-from app.models.cognition import FonctionCognitive
+from app.models.cognition import FonctionCognitive, RetentissementVieQuotidienne
 from app.models.taxonomy import Theme, Trouble
 from app.models.user import User
 from app.schemas.catalogue import (
@@ -18,10 +18,12 @@ from app.schemas.catalogue import (
     ApplicationRead,
     ApplicationUpdate,
     FonctionCognitiveRead,
+    RetentissementRead,
     ThemeRead,
     TroubleRead,
 )
 from app.services import catalogue as svc
+from app.services import search as search_svc
 
 router = APIRouter()
 
@@ -45,6 +47,22 @@ def list_fonctions(db: Session = Depends(get_db)):
     return list(db.scalars(select(FonctionCognitive).order_by(FonctionCognitive.nom)))
 
 
+@router.get(
+    "/_meta/retentissements",
+    response_model=list[RetentissementRead],
+    tags=["catalogue"],
+)
+def list_retentissements(db: Session = Depends(get_db)):
+    """Retentissements en vie quotidienne (filtre de recherche enrichie)."""
+    return list(
+        db.scalars(
+            select(RetentissementVieQuotidienne).order_by(
+                RetentissementVieQuotidienne.libelle
+            )
+        )
+    )
+
+
 # --- Applications ---
 @router.get("", response_model=list[ApplicationRead])
 def list_apps(
@@ -54,6 +72,36 @@ def list_apps(
     trouble: str | None = Query(default=None, description="pathology filter"),
 ):
     return svc.list_applications(db, q=q, os=os, trouble=trouble)
+
+
+# --- Recherche multi-critères enrichie (spec 5.3) ---
+@router.get("/search", response_model=list[ApplicationRead], tags=["catalogue"])
+def search_apps(
+    db: Session = Depends(get_db),
+    q: str | None = Query(default=None, description="recherche full-text FR"),
+    fonction: str | None = Query(default=None, description="fonction cognitive L'ADAPT"),
+    sous_fonction: str | None = Query(default=None, description="sous-fonction"),
+    trouble: str | None = Query(default=None, description="trouble (pathologie)"),
+    retentissement: str | None = Query(
+        default=None, description="retentissement en vie quotidienne"
+    ),
+    plateformes: list[str] | None = Query(
+        default=None, description="supports (répétable), ex: ?plateformes=Web&plateformes=iOS"
+    ),
+    gratuit: bool | None = Query(default=None, description="filtrer sur la gratuité"),
+    objectif: str | None = Query(default=None, description="objectif thérapeutique"),
+):
+    return search_svc.search_applications(
+        db,
+        q=q,
+        fonction=fonction,
+        sous_fonction=sous_fonction,
+        trouble=trouble,
+        retentissement=retentissement,
+        plateformes=plateformes,
+        gratuit=gratuit,
+        objectif=objectif,
+    )
 
 
 @router.get("/{app_id}", response_model=ApplicationRead)

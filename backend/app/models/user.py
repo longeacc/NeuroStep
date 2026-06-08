@@ -28,6 +28,12 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     # Phase 0: email/password auth with email verification.
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    # Ergothérapeute : identité prescripteur (PDF) + numéro RPPS (actif de confiance).
+    etablissement: Mapped[str | None] = mapped_column(String(255), default=None)
+    rpps: Mapped[str | None] = mapped_column(String(20), default=None)
+    rpps_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )

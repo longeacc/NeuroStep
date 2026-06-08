@@ -49,6 +49,9 @@ class Settings(BaseSettings):
     # --- CORS ---
     CORS_ORIGINS: list[str] = Field(default=["http://localhost:3000"])
 
+    # --- Frontend (liens partagés de prescription / QR code PDF) ---
+    FRONTEND_URL: str = "http://localhost:3000"
+
     # --- First admin (created by seed) ---
     FIRST_ADMIN_EMAIL: str = "admin@neurostep.app"
     FIRST_ADMIN_PASSWORD: str = "admin"

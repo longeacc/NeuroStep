@@ -23,6 +23,14 @@ export function Navbar() {
           <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
             Catalogue
           </Link>
+          {user?.role === "ergo" && (
+            <Link
+              href="/prescriptions"
+              className="text-sm text-muted-foreground hover:text-foreground"
+            >
+              Prescriptions
+            </Link>
+          )}
           {user ? (
             <>
               <span className="text-sm text-muted-foreground">{user.email}</span>

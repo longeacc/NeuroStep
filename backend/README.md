@@ -143,11 +143,21 @@ personal health data (art. L.1111-8 CSP).
 | GET    | `/applications/_meta/troubles`         | —      | Pathology taxonomy                |
 | GET    | `/applications/_meta/themes`           | —      | Activity-area taxonomy            |
 | GET    | `/applications/_meta/fonctions`        | —      | L'ADAPT cognitive functions + sub-functions |
+| GET    | `/applications/_meta/retentissements`  | —      | Retentissements en vie quotidienne |
+| GET    | `/applications/search`                 | —      | Recherche multi-critères enrichie (spec 5.3) |
 | POST   | `/relations`                           | ergo   | Open therapeutic relation w/ patient |
 | GET    | `/relations`                           | ergo   | My patients                       |
 | DELETE | `/relations/{patient_id}`              | ergo   | End relation (revoke access)      |
-| POST   | `/evaluations`                         | JWT    | Rate a tool (Phase 1)             |
-| GET    | `/evaluations/application/{id}`        | —      | Evaluations for a tool            |
+| POST   | `/evaluations`                         | ergo   | Évaluation multi-axes (5 axes + commentaires) |
+| GET    | `/evaluations/application/{id}`        | —      | Évaluations d'un outil            |
+| GET    | `/evaluations/application/{id}/summary`| —      | Moyennes agrégées par axe         |
+| POST   | `/prescriptions`                       | ergo   | Créer une prescription (relation requise) |
+| GET    | `/prescriptions`                       | ergo   | Mes prescriptions                 |
+| GET    | `/prescriptions/{id}`                  | ergo/patient | Détail                      |
+| POST   | `/prescriptions/{id}/validate`         | ergo   | Valider → jeton de partage        |
+| GET    | `/prescriptions/{id}/pdf`              | ergo/patient | Export PDF (reportlab + QR)  |
+| GET    | `/prescriptions/shared/{token}`        | —      | Accès patient (lien sécurisé)     |
+| POST   | `/prescriptions/shared/{token}/items/{item_id}/feedback` | — | Feedback d'usage patient |
 
 ## Data migration — L'ADAPT taxonomy (spec 4.5)
 
@@ -184,10 +194,55 @@ Dialect-aware, behind the same endpoint:
 `pgvector` is enabled best-effort (image `pgvector/pgvector:pg16`) and reserved for
 Phase 2 semantic search.
 
+## Recherche multi-critères enrichie — `GET /applications/search` (spec 5.3)
+
+Recherche croisée combinable (tous les critères sont optionnels et cumulables) :
+
+| Paramètre        | Effet |
+|------------------|-------|
+| `q`              | full-text FR (nom + description + objectif) — PG ; `ILIKE` en dev SQLite |
+| `fonction`       | fonction cognitive L'ADAPT (ex. `Attention`) |
+| `sous_fonction`  | sous-fonction (ex. `Réception`) |
+| `trouble`        | pathologie (ex. `Aphasie`) |
+| `retentissement` | retentissement en vie quotidienne (ex. « Ne peut pas suivre une procédure écrite ») |
+| `plateformes`    | répétable : `?plateformes=Web&plateformes=iOS` (intersection) |
+| `gratuit`        | `true` / `false` |
+| `objectif`       | texte dans l'objectif thérapeutique |
+
+Sur PostgreSQL : `to_tsvector('french', f_unaccent(...))` + `plainto_tsquery`, tri par
+`ts_rank`. L'index GIN `idx_app_search` (migration `0002`) couvre **exactement** la même
+expression (`f_unaccent` = wrapper IMMUTABLE autour de `unaccent`, requis pour un index
+d'expression). Index GIN `idx_app_plateformes` sur le jsonb des plateformes.
+
 ## CI/CD
 
 `.github/workflows/ci.yml` (sur push / PR vers `main`) : **lint ruff → pytest (couverture
 ≥80%) → build de l'image Docker backend**. Étape staging Scaleway à brancher en S10.
+
+## Prescription numérique (spec 5.4)
+
+Workflow ergothérapeute → patient, cloisonné par la relation thérapeutique :
+
+1. L'ergo crée une prescription (statut `draft`) : patient + 1..N outils, chacun avec
+   **consignes** personnalisées et **priorité** (1 haute → 3 basse). La création exige
+   une `relation_therapeutique` active (sinon 403).
+2. `POST /prescriptions/{id}/validate` → statut `validated` + **jeton de partage** (`secrets`).
+3. **PDF serveur** (`GET /{id}/pdf`) via **reportlab + qrcode** : identité prescripteur
+   (nom, établissement, RPPS), date, outils + consignes, fiches résumées (avantages/limites),
+   et un **QR code** vers la version interactive (`FRONTEND_URL/p/{token}`).
+4. **Lien sécurisé patient** (`/shared/{token}`, sans auth) : consultation + **feedback
+   d'usage** par outil.
+
+> weasyprint a été écarté (dépendances système GTK/Pango/Cairo) au profit de reportlab,
+> pur Python et portable Windows/Docker.
+
+## Évaluations multi-axes (spec 5.5)
+
+`POST /evaluations` (réservé `ergo`) : **5 axes** notés 1–5 (pertinence clinique,
+utilisabilité, efficacité, accessibilité, intégration) + **commentaires structurés**
+(avantages, limites, contexte d'utilisation, profil patient type). Chaque évaluation
+expose sa `moyenne` et `auteur_rpps_verifie` (crédibilité : pro à **RPPS vérifié**).
+`GET /evaluations/application/{id}/summary` renvoie les moyennes agrégées par axe.
 
 ## Next steps (Phase 1)
 - React backoffice replacing SQLAdmin.

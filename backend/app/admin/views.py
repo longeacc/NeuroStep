@@ -22,6 +22,7 @@ from app.models.cognition import (
     SousFonction,
 )
 from app.models.evaluation import Evaluation
+from app.models.prescription import Prescription, PrescriptionItem
 from app.models.relation import RelationTherapeutique
 from app.models.taxonomy import Theme, Trouble
 from app.models.user import User, UserRole
@@ -116,7 +117,33 @@ class RelationAdmin(ModelView, model=RelationTherapeutique):
 
 
 class EvaluationAdmin(ModelView, model=Evaluation):
-    column_list = [Evaluation.id, Evaluation.application_id, Evaluation.user_id, Evaluation.rating]
+    column_list = [
+        Evaluation.id,
+        Evaluation.application_id,
+        Evaluation.user_id,
+        Evaluation.pertinence_clinique,
+        Evaluation.efficacite,
+    ]
+
+
+class PrescriptionAdmin(ModelView, model=Prescription):
+    column_list = [
+        Prescription.id,
+        Prescription.ergo_id,
+        Prescription.patient_id,
+        Prescription.status,
+    ]
+
+
+class PrescriptionItemAdmin(ModelView, model=PrescriptionItem):
+    name = "Item de prescription"
+    name_plural = "Items de prescription"
+    column_list = [
+        PrescriptionItem.id,
+        PrescriptionItem.prescription_id,
+        PrescriptionItem.application_id,
+        PrescriptionItem.priorite,
+    ]
 
 
 def setup_admin(app, secret_key: str) -> Admin:
@@ -135,4 +162,6 @@ def setup_admin(app, secret_key: str) -> Admin:
     admin.add_view(UserAdmin)
     admin.add_view(RelationAdmin)
     admin.add_view(EvaluationAdmin)
+    admin.add_view(PrescriptionAdmin)
+    admin.add_view(PrescriptionItemAdmin)
     return admin
