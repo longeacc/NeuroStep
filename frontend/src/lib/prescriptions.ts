@@ -25,8 +25,16 @@ export function getPrescription(id: number) {
   return api.request<Prescription>(`/prescriptions/${id}`, { auth: true });
 }
 
-export function validatePrescription(id: number) {
+export function validatePrescription(id: number, expiresDays?: number) {
   return api.request<Prescription>(`/prescriptions/${id}/validate`, {
+    method: "POST",
+    auth: true,
+    body: JSON.stringify({ expires_days: expiresDays ?? null }),
+  });
+}
+
+export function revokeShare(id: number) {
+  return api.request<Prescription>(`/prescriptions/${id}/share/revoke`, {
     method: "POST",
     auth: true,
   });

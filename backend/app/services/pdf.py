@@ -39,7 +39,9 @@ def _qr_image(url: str) -> Image:
     return Image(buf, width=30 * mm, height=30 * mm)
 
 
-def render_prescription_pdf(prescription: Prescription, ergo: User) -> bytes:
+def render_prescription_pdf(
+    prescription: Prescription, ergo: User, share_token: str | None = None
+) -> bytes:
     """Retourne le PDF (bytes) de la prescription validée."""
     buf = io.BytesIO()
     doc = SimpleDocTemplate(
@@ -53,7 +55,7 @@ def render_prescription_pdf(prescription: Prescription, ergo: User) -> bytes:
     elements: list = []
 
     # En-tête : titre + QR code (lien interactif) à droite.
-    share_url = f"{settings.FRONTEND_URL}/p/{prescription.share_token}"
+    share_url = f"{settings.FRONTEND_URL}/p/{share_token or ''}"
     header = Table(
         [[Paragraph("Prescription numérique", h1), _qr_image(share_url)]],
         colWidths=[None, 32 * mm],

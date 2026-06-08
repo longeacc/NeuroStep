@@ -22,7 +22,11 @@ from app.models.cognition import (
     SousFonction,
 )
 from app.models.evaluation import Evaluation
-from app.models.prescription import Prescription, PrescriptionItem
+from app.models.prescription import (
+    Prescription,
+    PrescriptionAccessLog,
+    PrescriptionItem,
+)
 from app.models.relation import RelationTherapeutique
 from app.models.taxonomy import Theme, Trouble
 from app.models.user import User, UserRole
@@ -146,6 +150,17 @@ class PrescriptionItemAdmin(ModelView, model=PrescriptionItem):
     ]
 
 
+class PrescriptionAccessLogAdmin(ModelView, model=PrescriptionAccessLog):
+    name = "Accès lien partagé"
+    name_plural = "Accès liens partagés"
+    column_list = [
+        PrescriptionAccessLog.id,
+        PrescriptionAccessLog.prescription_id,
+        PrescriptionAccessLog.accessed_at,
+        PrescriptionAccessLog.ip,
+    ]
+
+
 def setup_admin(app, secret_key: str) -> Admin:
     admin = Admin(
         app,
@@ -164,4 +179,5 @@ def setup_admin(app, secret_key: str) -> Admin:
     admin.add_view(EvaluationAdmin)
     admin.add_view(PrescriptionAdmin)
     admin.add_view(PrescriptionItemAdmin)
+    admin.add_view(PrescriptionAccessLogAdmin)
     return admin

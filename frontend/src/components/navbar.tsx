@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Brain, LogIn, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores/auth";
@@ -8,6 +9,10 @@ import { logout } from "@/lib/auth";
 
 export function Navbar() {
   const user = useAuthStore((s) => s.user);
+  const pathname = usePathname();
+
+  // Interface patient (lien partagé) : navigation dédiée, accessible — pas de navbar.
+  if (pathname?.startsWith("/p/")) return null;
 
   return (
     <header className="border-b bg-background">

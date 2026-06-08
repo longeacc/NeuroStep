@@ -52,6 +52,11 @@ class Settings(BaseSettings):
     # --- Frontend (liens partagés de prescription / QR code PDF) ---
     FRONTEND_URL: str = "http://localhost:3000"
 
+    # --- Partage prescription (spec 5.6) : expiration configurable 7–30 jours ---
+    SHARE_TOKEN_EXPIRE_DAYS: int = 14
+    SHARE_TOKEN_MIN_DAYS: int = 7
+    SHARE_TOKEN_MAX_DAYS: int = 30
+
     # --- First admin (created by seed) ---
     FIRST_ADMIN_EMAIL: str = "admin@neurostep.app"
     FIRST_ADMIN_PASSWORD: str = "admin"

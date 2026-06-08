@@ -36,10 +36,19 @@ class PrescriptionRead(BaseModel):
     patient_id: int
     status: str
     notes: str | None
-    share_token: str | None
+    # JWT de partage recalculé à la volée (non stocké) ; None si absent/révoqué/expiré.
+    share_token: str | None = None
+    share_revoked: bool = False
+    share_expires_at: datetime | None = None
     created_at: datetime
     validated_at: datetime | None
     items: list[PrescriptionItemRead]
+
+
+class ValidateRequest(BaseModel):
+    """Expiration du lien configurable (7–30 jours)."""
+
+    expires_days: int | None = Field(default=None, ge=7, le=30)
 
 
 class FeedbackCreate(BaseModel):

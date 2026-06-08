@@ -3,13 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, FileDown, Check, Copy } from "lucide-react";
+import { ArrowLeft, FileDown, Check, Copy, Ban } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   usePrescription,
   validatePrescription,
+  revokeShare,
   openPrescriptionPdf,
 } from "@/lib/prescriptions";
 import { PRIORITE_LABELS } from "@/lib/types";
@@ -36,6 +37,16 @@ export default function PrescriptionDetailPage({
     setBusy(true);
     try {
       await validatePrescription(prescId);
+      await queryClient.invalidateQueries({ queryKey: ["prescriptions", prescId] });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function revoke() {
+    setBusy(true);
+    try {
+      await revokeShare(prescId);
       await queryClient.invalidateQueries({ queryKey: ["prescriptions", prescId] });
     } finally {
       setBusy(false);
@@ -99,16 +110,26 @@ export default function PrescriptionDetailPage({
             <Button onClick={() => openPrescriptionPdf(presc.id)}>
               <FileDown className="h-4 w-4" /> Télécharger le PDF
             </Button>
-            {shareUrl && (
-              <Button
-                variant="outline"
-                onClick={() => {
-                  navigator.clipboard.writeText(shareUrl);
-                  setCopied(true);
-                }}
-              >
-                <Copy className="h-4 w-4" /> {copied ? "Lien copié !" : "Copier le lien patient"}
-              </Button>
+            {shareUrl ? (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    navigator.clipboard.writeText(shareUrl);
+                    setCopied(true);
+                  }}
+                >
+                  <Copy className="h-4 w-4" />{" "}
+                  {copied ? "Lien copié !" : "Copier le lien patient"}
+                </Button>
+                <Button variant="destructive" onClick={revoke} disabled={busy}>
+                  <Ban className="h-4 w-4" /> Révoquer le lien
+                </Button>
+              </>
+            ) : (
+              <span className="text-sm text-muted-foreground">
+                Lien révoqué ou expiré.
+              </span>
             )}
           </>
         )}

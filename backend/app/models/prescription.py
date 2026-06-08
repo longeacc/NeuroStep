@@ -7,7 +7,7 @@ L'accès est cloisonné par la relation thérapeutique (cf. api/deps.ensure_acti
 
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -29,10 +29,17 @@ class Prescription(Base):
     )
     status: Mapped[str] = mapped_column(String(20), default=STATUS_DRAFT, nullable=False)
     notes: Mapped[str | None] = mapped_column(Text, default=None)
-    # Jeton du lien sécurisé patient (généré à la validation).
-    share_token: Mapped[str | None] = mapped_column(
-        String(64), unique=True, index=True, default=None
+
+    # Partage sécurisé (spec 5.6) : le token est un JWT signé ; on stocke ici le
+    # jti (UUID v4) pour la révocation + la date d'expiration.
+    share_jti: Mapped[str | None] = mapped_column(
+        String(36), unique=True, index=True, default=None
     )
+    share_revoked: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    share_expires_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), default=None
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
@@ -69,3 +76,18 @@ class PrescriptionItem(Base):
 
     prescription: Mapped[Prescription] = relationship(back_populates="items")
     application = relationship("Application", lazy="selectin")
+
+
+class PrescriptionAccessLog(Base):
+    """Log d'accès horodaté au lien partagé (spec 5.6)."""
+
+    __tablename__ = "prescription_access_logs"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    prescription_id: Mapped[int] = mapped_column(
+        ForeignKey("prescriptions.id", ondelete="CASCADE"), index=True
+    )
+    accessed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
+    ip: Mapped[str | None] = mapped_column(String(64), default=None)

@@ -95,6 +95,74 @@ def test_shared_invalid_token(client):
     assert client.get(f"{API}/prescriptions/shared/inexistant").status_code == 404
 
 
+def test_share_token_signed_and_expiry(client):
+    """Le token est un JWT signé (3 segments) et l'expiration est encodée (spec 5.6)."""
+    ergo_tok, pid = _ergo_with_patient(client, "ergo_sign@x.fr", "pat_sign@x.fr")
+    app_id = client.get(f"{API}/applications").json()[0]["id"]
+    pr = client.post(
+        f"{API}/prescriptions",
+        json={"patient_id": pid, "items": [{"application_id": app_id}]},
+        headers=auth_header(ergo_tok),
+    ).json()
+    v = client.post(
+        f"{API}/prescriptions/{pr['id']}/validate",
+        json={"expires_days": 30},
+        headers=auth_header(ergo_tok),
+    ).json()
+    assert v["share_token"].count(".") == 2  # header.payload.signature
+    assert v["share_expires_at"] is not None
+    assert v["share_revoked"] is False
+
+
+def test_revoke_share_blocks_access(client):
+    ergo_tok, pid = _ergo_with_patient(client, "ergo_rev@x.fr", "pat_rev@x.fr")
+    app_id = client.get(f"{API}/applications").json()[0]["id"]
+    pr = client.post(
+        f"{API}/prescriptions",
+        json={"patient_id": pid, "items": [{"application_id": app_id}]},
+        headers=auth_header(ergo_tok),
+    ).json()
+    token = client.post(
+        f"{API}/prescriptions/{pr['id']}/validate", headers=auth_header(ergo_tok)
+    ).json()["share_token"]
+
+    assert client.get(f"{API}/prescriptions/shared/{token}").status_code == 200
+    # révocation par l'ergo
+    r = client.post(
+        f"{API}/prescriptions/{pr['id']}/share/revoke", headers=auth_header(ergo_tok)
+    )
+    assert r.status_code == 200 and r.json()["share_revoked"] is True
+    # le lien ne fonctionne plus
+    assert client.get(f"{API}/prescriptions/shared/{token}").status_code == 404
+
+
+def test_access_is_logged(client):
+    from app.db.session import SessionLocal
+    from app.models.prescription import PrescriptionAccessLog
+    from sqlalchemy import func, select
+
+    ergo_tok, pid = _ergo_with_patient(client, "ergo_log@x.fr", "pat_log@x.fr")
+    app_id = client.get(f"{API}/applications").json()[0]["id"]
+    pr = client.post(
+        f"{API}/prescriptions",
+        json={"patient_id": pid, "items": [{"application_id": app_id}]},
+        headers=auth_header(ergo_tok),
+    ).json()
+    token = client.post(
+        f"{API}/prescriptions/{pr['id']}/validate", headers=auth_header(ergo_tok)
+    ).json()["share_token"]
+
+    client.get(f"{API}/prescriptions/shared/{token}")
+    client.get(f"{API}/prescriptions/shared/{token}")
+    with SessionLocal() as db:
+        n = db.scalar(
+            select(func.count(PrescriptionAccessLog.id)).where(
+                PrescriptionAccessLog.prescription_id == pr["id"]
+            )
+        )
+    assert n >= 2
+
+
 def test_prescription_my_list(client):
     ergo_tok, pid = _ergo_with_patient(client, "ergo_list@x.fr", "pat_list@x.fr")
     app_id = client.get(f"{API}/applications").json()[0]["id"]

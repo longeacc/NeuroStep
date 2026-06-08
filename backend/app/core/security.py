@@ -8,12 +8,15 @@ from passlib.context import CryptContext
 
 from app.core.config import settings
 
+# HS256 = HMAC-SHA256 ; conforme à la spec 5.6 (token signé HMAC-SHA256).
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Token "type" claim — guards against using one token kind where another is expected.
 TOKEN_ACCESS = "access"
 TOKEN_REFRESH = "refresh"
 TOKEN_EMAIL_VERIFY = "email_verify"
+TOKEN_SHARE = "share"
 
 
 def hash_password(plain: str) -> str:
@@ -62,3 +65,32 @@ def decode_token(token: str, expected_type: str) -> str | None:
     if payload.get("type") != expected_type:
         return None
     return payload.get("sub")
+
+
+def create_share_token(prescription_id: int, jti: str, expires_at: datetime) -> str:
+    """Token de partage signé : sub=prescription, jti (UUID v4) pour la révocation,
+    exp encodée dans le token (spec 5.6)."""
+    payload = {
+        "sub": str(prescription_id),
+        "type": TOKEN_SHARE,
+        "jti": jti,
+        "exp": expires_at,
+    }
+    return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+
+def decode_share_token(token: str) -> tuple[int, str] | None:
+    """Retourne (prescription_id, jti) si le token est valide et non expiré, sinon None.
+    L'expiration est vérifiée automatiquement par la signature JWT."""
+    try:
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
+    except JWTError:
+        return None
+    if payload.get("type") != TOKEN_SHARE:
+        return None
+    try:
+        return int(payload["sub"]), payload["jti"]
+    except (KeyError, ValueError):
+        return None
