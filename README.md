@@ -1,35 +1,61 @@
-# Neurostep
+# NeuroStep
 
-**Catalogue numérique d'API / Outils pour Cérébrolésés & Tumeurs**
+**A searchable catalogue of digital tools that help people with acquired brain injury or brain tumours compensate for cognitive difficulties.**
 
-Outil développé dans le cadre du Hackathon SN@SU. Il permet d'accumuler, classifier et rechercher des applications de compensation cognitive (Aide à la communication, Mémoire, Planification, etc.).
+*Catalogue numérique d'applications et d'outils pour cérébrolésés et personnes atteintes de tumeurs cérébrales.*
 
-## Lancer le projet
+![Python](https://img.shields.io/badge/Python-3.10%2B-24292e?logo=python&logoColor=auto)
+![Streamlit](https://img.shields.io/badge/Streamlit-24292e?logo=streamlit&logoColor=auto)
 
-```bash
-# 1. Créer un environnement virtuel (optionnel mais recommandé)
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+NeuroStep started at the **SN@SU Hackathon** (Sorbonne Université). Occupational therapists and patients can find apps for communication, memory and planning without searching app stores one by one: each tool is listed, classified by disorder and theme, and searchable.
 
-# 2. Installer les dépendances
-pip install -r requirements.txt
+## What it does
 
-# 3. Lancer l'application
-streamlit run app.py
-```
+| Feature | Description |
+|---|---|
+| **Catalogue** | Lists cognitive compensation tools such as communication aids, memory aids and planning tools |
+| **Classification** | Each tool is linked to the disorders it addresses and to a theme |
+| **Search** | Filter the catalogue by disorder, theme or keyword |
+| **Admin interface** | Add, edit and remove entries without touching the data file |
 
 ## Architecture
 
-Toutes les données sont stockées au format `.json` pour faciliter la gestion et l'évolution de la base sans SQL. 
+The MVP is a Streamlit application backed by a JSON file, which keeps the data easy to read, edit and extend without a SQL server.
 
-- `app.py` : L'interface utilisateur et administrateur (Streamlit)
-- `database.py` : Le gestionnaire de la base de données JSON
-- `data/database.json` : Les applications, troubles et thèmes répertoriés
+| Path | Role |
+|---|---|
+| `app.py` | Streamlit application: user view and admin view |
+| `database.py` | Manager for the JSON database |
+| `data/database.json` | Listed applications, disorders and themes |
+| `backend/`, `frontend/` | Work in progress towards an API backend and a web frontend |
+| `.github/workflows/` | Continuous integration |
 
-## Licence
+The catalogue stores tools, disorders and themes only. It holds no patient data.
 
-© 2026 Clément Longeac — **Tous droits réservés**.
+## Quick start
 
-Le code est rendu public uniquement pour permettre le déploiement sur Streamlit
-Community Cloud. Toute copie, modification, redistribution ou réutilisation est
-interdite sans autorisation écrite. Voir le fichier [LICENSE](LICENSE).
+```bash
+git clone https://github.com/longeacc/NeuroStep.git
+cd NeuroStep
+
+python -m venv .venv
+source .venv/bin/activate        # Windows PowerShell: .\.venv\Scripts\Activate.ps1
+
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+## Roadmap
+
+- Replace the JSON file with a relational database
+- Expose the catalogue through an authenticated API
+- Add a web frontend usable on phones and tablets
+- Improve search so that a therapist can describe a need in plain language
+
+## License
+
+© 2026 Clément Longeac. All rights reserved. The code is public so that the application can be deployed on Streamlit Community Cloud. Copying, modifying, redistributing or reusing it requires written permission, see [LICENSE](LICENSE).
+
+## Contact
+
+Clément Longeac, ESIEE Paris · [LinkedIn](https://www.linkedin.com/in/clément-longeac) · [Email](mailto:clement.longeac@edu.esiee.fr)
